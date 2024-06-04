@@ -18,3 +18,4 @@ starlette
 langchain
 openai
 pyautogen
+jupyterlab
