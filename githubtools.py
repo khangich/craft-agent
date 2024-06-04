@@ -44,9 +44,5 @@ def get_filechanges_and_comment():
     content = _get_diff_content(pr.diff_url)
     return pr.comments, content
 
-def pr_prompt(comment: str, content: str):
-    prompt = f"You're a Code generation assistant, you have this review comment: '{comment}' for your PR changes: '{content}'. Please suggest 2 actions to address the comment."
-    return prompt
-
-get_filechanges_and_comment()
+# get_filechanges_and_comment()
 

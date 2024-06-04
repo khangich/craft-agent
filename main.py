@@ -1,6 +1,6 @@
 import autogen
 import os
-
+from githubtools import get_filechanges_and_comment
 
 llm_config = {
     "config_list": [{"model": "gpt-3.5-turbo", "api_key": os.environ["OPENAI_API_KEY"]}],
@@ -9,6 +9,14 @@ llm_config = {
 def is_termination_msg(msg):
     return msg["content"] == "STOP!!!"
 
+pr_update_github_agent = autogen.ConversableAgent(
+    "github_agent",
+    system_message="""You are Code generation assistant that helps user to read pull request comments. 
+    You will select the right tool and handle the ask from the user?""",
+    llm_config=llm_config,
+    is_termination_msg=is_termination_msg,
+    human_input_mode="TERMINATE"
+)
 
 human_proxy = autogen.ConversableAgent(
     "human_proxy",
@@ -56,22 +64,56 @@ def get_unread_messages() -> list[str]:
         "Thanks to everyone for your hard work this quarter. Let's keep the momentum going!"
     ]
 
-slack_agent = autogen.ConversableAgent(
-    "slack_agent",
-    system_message="You are helpful assistant that helps user to read slack messages. You will select the right tool and handle the ask from the user?",
+# slack_agent = autogen.ConversableAgent(
+#     "slack_agent",
+#     system_message="You are helpful assistant that helps user to read slack messages. You will select the right tool and handle the ask from the user?",
+#     llm_config=llm_config,
+#     is_termination_msg=is_termination_msg,
+#     human_input_mode="TERMINATE"
+# )
+# slack_agent.register_for_llm(
+#     name="get_unread_messages",
+#     description="Get unread message from slack from the current registered user"
+# )(get_unread_messages)
+
+
+github_agent = autogen.ConversableAgent(
+    "github_agent",
+    system_message="""You are Code generation assistant that helps user to read pull request comments. 
+    You will select the right tool and handle the ask from the user?""",
     llm_config=llm_config,
     is_termination_msg=is_termination_msg,
     human_input_mode="TERMINATE"
 )
+github_agent.register_for_llm(
+    name="get_filechanges_and_comment",
+    description="Get latest PR changes and comments"
+)(get_filechanges_and_comment)
 
-slack_agent.register_for_llm(
-    name="get_unread_messages",
-    description="Get unread message from slack from the current registered user"
-)(get_unread_messages)
 
-human_proxy.register_for_execution(name="get_unread_messages")(get_unread_messages)
+def execute_github_pr_agent(comment: str) -> str:
+    print(github_agent.last_message)
+    return human_proxy.send(
+        pr_update_github_agent,
+        message="""You're a Code generation assistant, you have this review comment: '{github_agent.last_message.get("content")}' for your PR changes. 
+       Please suggest 2 actions to address the comment."""
+    )
+
+
+github_agent.register_for_llm(
+    name="execute_github_pr_agent",
+    description="make the code changes to address PR comments"
+)(execute_github_pr_agent)
+
+
+
+human_proxy.register_for_execution(name="get_filechanges_and_comment")(get_filechanges_and_comment)
+
+
+human_proxy.register_for_execution(name="execute_github_pr_agent")(execute_github_pr_agent)
 
 human_proxy.initiate_chat(
-    slack_agent,
-    message="What is important from my slack message?"
+    github_agent,
+    message="What is new with my PR changes?"
 )
+
