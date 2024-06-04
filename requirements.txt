@@ -3,7 +3,6 @@ openai
 jinja2
 python-multipart
 boto3
-sqlalchemy
 asyncpg
 python-jose[cryptography]
 python-dotenv
@@ -19,3 +18,4 @@ langchain
 openai
 pyautogen
 jupyterlab
+pygithub

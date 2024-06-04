@@ -1,121 +1,52 @@
-
-class GithubTools:
-    def __init__(self, author):
-        self.author = author
-
-    def read_recent_pull_request(self):
-        import requests
-        url = f"https://api.github.com/repos/{self.author}/pulls"
-        response = requests.get(url)
-        if response.status_code == 200:
-            pull_requests = response.json()
-            if pull_requests:
-                recent_pull_request = pull_requests[0]
-                return recent_pull_request
-            else:
-                print("No recent pull requests found for this author.")
-                return None
-        else:
-            print("Failed to fetch pull requests.")
-            return None
-        
-    def get_pr_file_changes(self, username, repo, pr):
-        import requests
-        response = requests.get(f"https://api.github.com/repos/{username}/{repo}/pulls/{pr}/files")
-        if response.status_code == 200:
-            files_changed = response.json()
-            pr_files = [elem['filename'] for elem in files_changed]
-            return pr_files
-        else:
-            print("Failed to fetch file changes.")
-            return None
-        
-    def get_pr_comments(self, username, repo, pr):
-        import requests
-        headers = {"Accept": "application/vnd.github-commitcomment.text+json"}
-        response = requests.get(f"https://api.github.com/repos/{username}/{repo}/pulls/{pr}/comments", headers=headers)
-        if response.status_code == 200:
-            comments = response.json()
-            return comments
-        else:
-            print("Failed to fetch comments.")
-            return None
-
-    def pull_all_diff(self):
-        # Code to pull all the diff from the recent PR
-        pass
-
-    def send_prompt_to_openai(self, file_changes_content):
-        # Code to send a prompt to OpenAI with the context as the file changes content
-        pass
-
-
-# ght = GithubTools("princeton-nlp")
-# # f = ght.get_pr_file_changes("princeton-nlp", "SWE-agent", 497)
-# # print(f)
-
-# # f = ght.get_pr_file_changes("princeton-nlp", "SWE-agent", 234)
-# f = ght.get_pr_comments("princeton-nlp", "SWE-agent", 234)
-# print(f)
-
-
 import os
-
 from autogen import ConversableAgent
-
-
 from typing import Annotated, Literal
+from github import Auth
+from github import Github
+from github import GithubIntegration
+import requests
 
-Operator = Literal["+", "-", "*", "/"]
+class Config:
+    def __init__(self):
+        self.USERNAME = os.getenv('USERNAME')
+        self.GITHUB_API_TOKEN = os.getenv('GITHUB_API_TOKEN')
+        self.REPO = os.getenv('REPO')
+
+    def validate(self):
+        if not all([self.USERNAME, self.GITHUB_API_TOKEN, self.REPO]):
+            raise ValueError("One or more environment variables are missing. Please ensure USERNAME, GITHUB_API_TOKEN, and REPO are set.")
 
 
-def calculator(a: int, b: int, operator: Annotated[Operator, "operator"]) -> int:
-    if operator == "+":
-        return a + b
-    elif operator == "-":
-        return a - b
-    elif operator == "*":
-        return a * b
-    elif operator == "/":
-        return int(a / b)
+auth = Auth.Token(Config().GITHUB_API_TOKEN)
+g = Github(auth=auth)
+if not g.get_user().login:
+    print("not login")
+
+
+
+def _get_diff_content(diff_url):
+    response = requests.get(diff_url)
+    if response.status_code == 200:
+        return response.text
     else:
-        raise ValueError("Invalid operator")
+        return None
     
+def get_recent_pull_request():
+    return 234
 
-# Let's first define the assistant agent that suggests tool calls.
-assistant = ConversableAgent(
-    name="Assistant",
-    system_message="You are a helpful AI assistant. "
-    "You can help with simple calculations. "
-    "Return 'TERMINATE' when the task is done.",
-    llm_config={"config_list": [{"model": "gpt-4", "api_key": os.environ["OPENAI_API_KEY"]}]},
-)
+def get_filechanges_and_comment():
+    repo = g.get_repo(f"{Config().REPO}")
+    pr = repo.get_pull(get_recent_pull_request())
+    # print("body = ", pr.body)
+    # print("comments = ", pr.comments)
+    # print("change files ", pr.changed_files)
+    # print("diff_url ", pr.diff_url)
+    content = _get_diff_content(pr.diff_url)
+    return pr.comments, content
 
-# The user proxy agent is used for interacting with the assistant agent
-# and executes tool calls.
-user_proxy = ConversableAgent(
-    name="User",
-    llm_config=False,
-    is_termination_msg=lambda msg: msg.get("content") is not None and "TERMINATE" in msg["content"],
-    human_input_mode="NEVER",
-)
+def pr_prompt(comment: str, content: str):
+    prompt = f"You're a Code generation assistant, you have this review comment: '{comment}' for your PR changes: '{content}'. Please suggest 2 actions to address the comment."
+    return prompt
 
-# Register the tool signature with the assistant agent.
-assistant.register_for_llm(name="calculator", description="A simple calculator")(calculator)
+get_filechanges_and_comment()
 
-# Register the tool function with the user proxy agent.
-user_proxy.register_for_execution(name="calculator")(calculator)
-
-chat_result = user_proxy.initiate_chat(assistant, message="What is (44232 + 13312 / (232 - 32)) * 5?")
-
-
-# print("Keys in the dictionary:")
-# for d in dict0:
-#     for key in d.keys():
-#         print(key)
-
-
-
-
-# pr_files = [elem['filename'] for elem in dict0]
-# print(pr_files)
