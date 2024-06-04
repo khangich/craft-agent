@@ -120,3 +120,4 @@ human_proxy.initiate_chat(
     message="What is new with my PR changes?"
 )
 
+exit(1)
