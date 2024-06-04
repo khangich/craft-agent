@@ -34,6 +34,21 @@ def _get_diff_content(diff_url):
 def get_recent_pull_request():
     return 1
 
+
+def get_pull_request_comment():
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "Authorization": f"Bearer {Config().GITHUB_API_TOKEN}",
+        "X-GitHub-Api-Version": "2022-11-28"
+    }
+    url = f"https://api.github.com/repos/{Config().REPO}/pulls/{get_recent_pull_request()}/comments"
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(response)
+        return None
+
 def get_filechanges_and_comment() -> str:
     repo = g.get_repo(f"{Config().REPO}")
     pr = repo.get_pull(get_recent_pull_request())
@@ -42,9 +57,10 @@ def get_filechanges_and_comment() -> str:
     # print("change files ", pr.changed_files)
     # print("diff_url ", pr.diff_url)
     content = _get_diff_content(pr.diff_url)
-    print(">>> pr.comments = ", pr.comments)
-    # comments = pr.comments
-    comments = "please add print success message at the end of main.py"
+    comments = get_pull_request_comment()
+    comments = " ".join([c["body"] for c in comments])
+    # print(">>> pr.comments = ", comments)
+    # comments = "do not exit(1), please print success message at the end"
     return f"{comments} : {content}"
 
 get_filechanges_and_comment()
