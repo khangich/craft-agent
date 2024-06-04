@@ -32,9 +32,9 @@ def _get_diff_content(diff_url):
         return None
     
 def get_recent_pull_request():
-    return 234
+    return 1
 
-def get_filechanges_and_comment():
+def get_filechanges_and_comment() -> str:
     repo = g.get_repo(f"{Config().REPO}")
     pr = repo.get_pull(get_recent_pull_request())
     # print("body = ", pr.body)
@@ -42,11 +42,10 @@ def get_filechanges_and_comment():
     # print("change files ", pr.changed_files)
     # print("diff_url ", pr.diff_url)
     content = _get_diff_content(pr.diff_url)
-    return pr.comments, content
-
-def pr_prompt(comment: str, content: str):
-    prompt = f"You're a Code generation assistant, you have this review comment: '{comment}' for your PR changes: '{content}'. Please suggest 2 actions to address the comment."
-    return prompt
+    print(">>> pr.comments = ", pr.comments)
+    # comments = pr.comments
+    comments = "please add print success message at the end of main.py"
+    return f"{comments} : {content}"
 
 get_filechanges_and_comment()
 
