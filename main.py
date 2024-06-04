@@ -9,13 +9,13 @@ llm_config = {
 def is_termination_msg(msg):
     return msg["content"] == "STOP!!!"
 
-pr_update_github_agent = autogen.ConversableAgent(
-    "github_agent",
+pr_update_github_agent = autogen.AssistantAgent(
+    "pr_update_github_agent",
     system_message="""You are Code generation assistant that helps user to read pull request comments. 
-    You will select the right tool and handle the ask from the user?""",
+    You have to response the ask from the users and reviewers""",
     llm_config=llm_config,
     is_termination_msg=is_termination_msg,
-    human_input_mode="TERMINATE"
+    human_input_mode="NEVER"
 )
 
 human_proxy = autogen.ConversableAgent(
@@ -91,12 +91,15 @@ github_agent.register_for_llm(
 )(get_filechanges_and_comment)
 
 
-def execute_github_pr_agent(comment: str) -> str:
-    print(github_agent.last_message)
-    return human_proxy.send(
-        pr_update_github_agent,
-        message="""You're a Code generation assistant, you have this review comment: '{github_agent.last_message.get("content")}' for your PR changes. 
-       Please suggest 2 actions to address the comment."""
+global_last_messsage = """
+"""
+
+async def execute_github_pr_agent(comment: str) -> str:
+    # print(github_agent.last_message)
+    return await human_proxy.send(
+        message=f"""You're a Code generation assistant, you have this review comment: '{human_proxy.chat_messages}' for your PR changes. 
+       """,
+       recipient=pr_update_github_agent,
     )
 
 
