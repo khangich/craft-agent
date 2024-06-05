@@ -33,10 +33,12 @@ def _get_diff_content(diff_url):
         return response.text
     else:
         return None
+    
+# def get_file_contents(filepaths: list[str]) -> str: 
 
 #todo how to pass pr number from workflow?    
 def get_recent_pull_request():
-    return 1
+    return 6
 
 def get_pull_request_comment():
     headers = {
