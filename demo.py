@@ -127,6 +127,15 @@ else:
     print("Patch applied successfully. output = ", output, " error = ", error)
 
 
+# Add the changes
+command = ["git", "add", "."]
+process = subprocess.Popen(command, stdout=subprocess.PIPE)
+output, error = process.communicate()
+if error:
+    print(f"Error occurred while adding changes: {error}")
+else:
+    print("Changes added successfully.")
+
 command = ["git", "commit", '-am "address comment"']
 # Execute the command
 process = subprocess.Popen(command, stdout=subprocess.PIPE)
