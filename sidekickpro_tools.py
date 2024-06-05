@@ -35,7 +35,7 @@ def _get_diff_content(diff_url):
         return None
     
 def get_recent_pull_request():
-    return 7
+    return 8
 
 def get_pull_request_comment():
     headers = {
