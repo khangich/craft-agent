@@ -139,7 +139,7 @@ else:
 
 BRANCH_NAME = os.getenv('BRANCH_NAME')
 
-command = ["git", "push", "origin", f"HEAD:origin/{BRANCH_NAME}"]
+command = ["git", "push", "origin", f"HEAD:refs/heads/{BRANCH_NAME}"]
 # Execute the command
 process = subprocess.Popen(command, stdout=subprocess.PIPE)
 output, error = process.communicate()
