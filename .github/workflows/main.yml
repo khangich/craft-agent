@@ -56,7 +56,7 @@ jobs:
           git add demo.py
           rm file.patch
           git commit -m "address comments"
-          git push origin $BRANCH_NAME
+          git push origin/$BRANCH_NAME
         
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
