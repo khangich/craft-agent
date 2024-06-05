@@ -137,7 +137,7 @@ if error:
 else:
     print("commit applied successfully.")
 
-command = ["git", "push"]
+command = ["git", "push", "origin", "HEAD:origin/kp/demo5"]
 # Execute the command
 process = subprocess.Popen(command, stdout=subprocess.PIPE)
 output, error = process.communicate()
@@ -147,5 +147,5 @@ else:
     print("Push applied successfully.")
 
 # apply_file_changes(pr_number, file_path: str, content: str, commit_message: str)
-print(">>>> Success. Helwo")
+print(">>>> Success. helwo")
 exit(0)
