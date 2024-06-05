@@ -42,6 +42,7 @@ user = autogen.UserProxyAgent(
     is_termination_msg=lambda x: x.get("content", "") and x.get("content", "").rstrip().endswith("TERMINATE"),
 )
 user.register_for_execution(name="get_filechanges_and_comment")(get_filechanges_and_comment)
+print(">>>> Starting demo")
 
 chat_results = user.initiate_chats(
     [
