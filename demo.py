@@ -127,14 +127,14 @@ else:
     print("Patch applied successfully. output = ", output, " error = ", error)
 
 
-# command = ["git", "commit", '-am "address comment"']
-# # Execute the command
-# process = subprocess.Popen(command, stdout=subprocess.PIPE)
-# output, error = process.communicate()
-# if error:
-#     print(f"Error occurred while commit: {error}")
-# else:
-#     print("commit applied successfully. output = ", output, " error = ", error)
+command = ["git", "commit", '-am "address comment"']
+# Execute the command
+process = subprocess.Popen(command, stdout=subprocess.PIPE)
+output, error = process.communicate()
+if error:
+    print(f"Error occurred while commit: {error}")
+else:
+    print("commit applied successfully. output = ", output, " error = ", error)
 
 # command = ["git", "push"]
 # # Execute the command
