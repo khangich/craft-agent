@@ -44,7 +44,16 @@ jobs:
           git config --global user.name "SidekickPro"
       - name: Run SidekickPro
         # Run tox using the version of Python in `PATH`
-        run: python demo.py
+        run: |
+         git checkout -b kp/test-pragain
+         python demo.py
+         git apply file.patch
+         cat demo.py
+         rm file.patch
+         git add demo.py
+         git commit --allow-empty-message -am "address comments"
+         git push --set-upstream origin kp/test-pragain
+        
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
