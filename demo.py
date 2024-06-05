@@ -4,8 +4,8 @@ import re
 
 from sidekickpro_tools import apply_file_changes, get_filechanges_and_comment
 
-config_list = [{"model": "llama3-70b-8192", "api_key": os.environ["GROQ_API_KEY"], "base_url": "https://api.groq.com/openai/v1"}]
-# config_list = [{"model": "gpt-4", "api_key": os.environ["OPENAI_API_KEY"]}]
+# config_list = [{"model": "llama3-70b-8192", "api_key": os.environ["GROQ_API_KEY"], "base_url": "https://api.groq.com/openai/v1"}]
+config_list = [{"model": "gpt-4", "api_key": os.environ["OPENAI_API_KEY"]}]
 llm_config = {
     "config_list": config_list,
 }
