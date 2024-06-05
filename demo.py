@@ -1,5 +1,7 @@
 import autogen
 import os
+import re
+
 from sidekickpro_tools import apply_file_changes, get_filechanges_and_comment
 
 # config_list = [{"model": "llama3-70b-8192", "api_key": os.environ["GROQ_API_KEY"], "base_url": "https://api.groq.com/openai/v1"}]
@@ -11,9 +13,7 @@ llm_config = {
 AGENT_ROUTING_PROMPT = """You are managing a group chat with the following agents: {agentlist}.
 Each agent has a specific role:
 - user: Handles human input. When you finish the task, returns to this role.
-- replier_agent: Responds to the user by converting outputs from other agents or functions into friendly, human-readable messages. It may be selected to respond to the output of other agents if the response is not clear.
-- slack_agent: Handles Slack-related questions. For example, to retrieve messages or interact with Slack-specific functions.
-- github_agent: Handles GitHub-related questions. For example, to manage pull requests, issues, and other GitHub interactions.
+- github_agent: Handle github related task. It can generate batch based on the comments and diffs of other tool.
 
 Based on the context of the current conversation and the roles of the agents, determine the most appropriate agent to handle the next message. Only return the role of the selected agent."""
 
@@ -21,18 +21,18 @@ GITHUB_AGENT_PROMPT = """
 You are a GitHub agent. Your task is to review the comments and diffs on a specified pull request (PR) and generate a GitHub patch based on the feedback provided. Follow these steps meticulously:
 
 1. Read Comments: Review all comments on the PR to understand the requested changes and feedback.
-2. Analyze DiffExamine the diffs to comprehend the changes made in the PR and identify areas that need modification based on the comments.
-3. Generate PatchCreate a patch file that includes the necessary changes to address the feedback in the comments and any code improvements identified from the diff analysis.
+2. Analyze DiffExamine the diffs to comprehend the changes made and identify areas that need modification based on the feedback comments.
+3. Generate PatchCreate a patch file that includes the necessary changes to ONLY address the feedback in the comments.
 
 Requirements:
 - Ensure the patch follows the repository's coding standards.
 - Address all issues mentioned in the comments.
-- Optimize code where necessary for performance and readability.
+- Follow the instructions carefully and ensure the patch file is generated correctly based on the provided guidelines.
 
 Output Format:
 - Provide the patch in a .patch file format.
 - Only generate the patch file and nothing else. Do not include summaries, explanations, or any additional text.
-- Add TERMINATE string at the end.
+- Add a TERMINATE string at the end.
 
 Example Patch Format:
 diff –git a/diff_test.txt b/diff_test.txt
@@ -42,24 +42,15 @@ index 6b0c6cf..b37e70a 100644
 @@ -1 +1 @@
 -this is a git diff test example
 +this is a diff example
-
-Follow the instructions carefully and ensure the patch file is generated correctly based on the provided guidelines.
 """
 
 
 def is_termination_msg(msg):
     content = msg.get("content", "")
 
-    return content and content.find("TERMINATE") >= 0
+    return content and content.rstrip().endswith("TERMINATE")
 
 
-replier_agent = autogen.AssistantAgent(
-    name="replier_agent",
-    llm_config=llm_config,
-    max_consecutive_auto_reply=2,
-    is_termination_msg=is_termination_msg,
-    system_message="You are a helpful AI assistant designed to handle outputs from other functions effectively. Your task is to convert the output messages to a friendly human message",
-)
 github_agent = autogen.AssistantAgent(
     name="github_agent",
     system_message=GITHUB_AGENT_PROMPT,
@@ -82,7 +73,7 @@ user_proxy = autogen.UserProxyAgent(
 user_proxy.register_for_execution(name="get_filechanges_and_comment")(get_filechanges_and_comment)
 
 group_chat = autogen.GroupChat(
-    agents=[user_proxy, replier_agent, github_agent],
+    agents=[user_proxy, github_agent],
     messages=[],
     speaker_selection_method="auto",
     select_speaker_prompt_template=AGENT_ROUTING_PROMPT,
@@ -108,6 +99,9 @@ chat_results = user_proxy.initiate_chats(
     ]
 )
 
+last_message = chat_results[-1].chat_history[-1]['content']
+last_message = re.sub(r'TERMINATE\n?$', '', last_message)
+
 pr_number = int(os.getenv('PR_NUMBER'))
 
 BRANCH_NAME = os.getenv('BRANCH_NAME')
@@ -132,11 +126,11 @@ import subprocess
 #     print("Checkout branch successful.")
 
 
-x = chat_results[-1].chat_history[-1]['content']
+x = last_message
 print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 print(x)
 with open('file.patch', 'w') as f:
-    f.write(x)
+    f.write(last_message)
 
 
 
