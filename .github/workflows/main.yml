@@ -10,7 +10,7 @@ jobs:
     environment: prod
     strategy:
       matrix:
-        python: ["3.9", "3.10", "3.11"]
+        python: ["3.10"]
 
     env:  # Set environment variables for all steps in this job
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
