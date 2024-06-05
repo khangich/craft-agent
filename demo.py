@@ -33,7 +33,7 @@ github_agent.register_for_llm(
 
 user = autogen.UserProxyAgent(
     name="User",
-    human_input_mode="ALWAYS",  # ask human for input at each step
+    human_input_mode="NEVER",  # ask human for input at each step
     is_termination_msg=lambda x: x.get("content", "") and x.get("content", "").rstrip().endswith("TERMINATE"),
 )
 user.register_for_execution(name="get_filechanges_and_comment")(get_filechanges_and_comment)
