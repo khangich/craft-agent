@@ -124,6 +124,7 @@ if error:
     print(f"Error occurred while applying patch: {error}")
 else:
     print("Patch applied successfully.")
+    print("Patch applied successfully. output = ", output, " error = ", error)
 
 
 command = ["git", "commit", '-am "address comment"']
@@ -133,7 +134,7 @@ output, error = process.communicate()
 if error:
     print(f"Error occurred while commit: {error}")
 else:
-    print("commit applied successfully.")
+    print("commit applied successfully. output = ", output, " error = ", error)
 
 command = ["git", "push"]
 # Execute the command
@@ -142,8 +143,8 @@ output, error = process.communicate()
 if error:
     print(f"Error occurred while push: {error}")
 else:
-    print("Push applied successfully.")
+    print("push applied successfully. output = ", output, " error = ", error)
 
 # apply_file_changes(pr_number, file_path: str, content: str, commit_message: str)
 print(">>>> Success. Helw")
-exit(1)
+exit(0)
