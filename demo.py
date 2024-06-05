@@ -76,7 +76,6 @@ github_agent.register_for_llm(
 user_proxy = autogen.UserProxyAgent(
     name="user",
     human_input_mode="NEVER",
-    max_consecutive_auto_reply=0,
     code_execution_config=False,
     is_termination_msg=is_termination_msg,
 )
