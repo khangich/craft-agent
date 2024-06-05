@@ -47,6 +47,7 @@ jobs:
         # Run tox using the version of Python in `PATH`
         run: |
          git checkout -b kp/test-pragain2
+         git pull origin kp/test-pragain2
          echo 'print("a")' >> demo.py
          cat demo.py
          git add demo.py
