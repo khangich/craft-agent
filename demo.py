@@ -83,4 +83,5 @@ import pdb
 x = chat_results[-1].chat_history[-1]['content']
 with open('file.patch', 'w') as f:
     f.write(x)
-print(">>>> Success")
+print(">>>> Success. Hello")
+exit(1)
