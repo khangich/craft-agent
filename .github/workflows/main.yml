@@ -48,3 +48,11 @@ jobs:
           REPO: ${{ secrets.REPO }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           PR_NUMBER: ${{ github.event.number }}
+      - name: Apply patch
+        # Run tox using the version of Python in `PATH`
+        run: |
+         git apply file.patch
+         git commit -am "address comments"
+         git push
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
