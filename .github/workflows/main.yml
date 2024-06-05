@@ -55,8 +55,7 @@ jobs:
       - name: Apply patch
         # Run tox using the version of Python in `PATH`
         run: |
-         cat file.patch
-         git apply file.patch
+         cat demo.py
          git add .
          git commit --allow-empty-message -am "address comments"
          git push origin kp/test-gh
