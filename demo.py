@@ -146,5 +146,5 @@ else:
     print("Push applied successfully.")
 
 # apply_file_changes(pr_number, file_path: str, content: str, commit_message: str)
-print(">>>> Success. Helw")
+print(">>>> Success. Hewlo")
 exit(0)
