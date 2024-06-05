@@ -57,23 +57,19 @@ def get_pull_request_comment():
 def get_filechanges_and_comment() -> str:
     repo = g.get_repo(f"{Config().REPO}")
     pr = repo.get_pull(get_recent_pull_request())
-    # print("body = ", pr.body)
-    # print("comments = ", pr.comments)
-    # print("change files ", pr.changed_files)
-    # print("diff_url ", pr.diff_url)
     try:
         print(">>> pr.diff_url", pr.diff_url)
         content = _get_diff_content(pr.diff_url)
         comments = get_pull_request_comment()
         if not comments or len(comments) < 2:
-            return "Do not need to do anything."
+            return "TERMINATE"
         print(">>> comments = ", comments)
         comments = " ".join([c["body"] for c in comments])
         return f"{comments} : {content}"
     # print(">>> pr.comments = ", comments)
     # comments = "do not exit(1), please print success message at the end"
     except:
-        return "Do not need to do anything."
+        return "TERMINATE"
 
 
 def apply_file_changes(pr_number: int, file_path: str, content: str, commit_message: str) -> bool:
