@@ -1,0 +1,21 @@
+name: Run Python script
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Pull Python Docker image
+      run: docker pull python:3.8
+
+    - name: Run demo.py
+      run: |
+        docker run --rm -v ${{ github.workspace }}:/app -w /app python:3.8 python demo.py
