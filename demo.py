@@ -145,7 +145,9 @@ if error:
 else:
     print("commit applied successfully. output = ", output, " error = ", error)
 
-command = ["git", "push"]
+BRANCH_NAME = os.getenv('BRANCH_NAME')
+print(f"branch name {BRANCH_NAME}")
+command = ["git", "push", f"origin {BRANCH_NAME}"]
 # Execute the command
 process = subprocess.Popen(command, stdout=subprocess.PIPE)
 output, error = process.communicate()
