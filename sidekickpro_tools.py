@@ -71,7 +71,7 @@ def get_filechanges_and_comment() -> str:
             return "TERMINATE"
         print("comments = ", comments)
         comments = " ".join([c["body"] for c in comments])
-        print("suc3ss")
+        print("suc3s")
         print("Fixed type message")
         return \
             f"""Agent to handle:
