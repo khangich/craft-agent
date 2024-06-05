@@ -113,49 +113,38 @@ print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 print(x)
 with open('file.patch', 'w') as f:
     f.write(x)
-print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-# pr_number = int(os.getenv('PR_NUMBER'))
-# import subprocess
-# # Define the command to apply the patch
-# command = ["git", "apply", "file.patch"]
-# # Execute the command
-# process = subprocess.Popen(command, stdout=subprocess.PIPE)
-# output, error = process.communicate()
-# if error:
-#     print(f"Error occurred while applying patch: {error}")
-# else:
-#     print("Patch applied successfully.")
-#     print("Patch applied successfully. output = ", output, " error = ", error)
+
+pr_number = int(os.getenv('PR_NUMBER'))
+import subprocess
+# Define the command to apply the patch
+command = ["git", "apply", "file.patch"]
+# Execute the command
+process = subprocess.Popen(command, stdout=subprocess.PIPE)
+output, error = process.communicate()
+if error:
+    print(f"Error occurred while applying patch: {error}")
+else:
+    print("Patch applied successfully.")
 
 
-# # Add the changes
-# command = ["git", "add", "."]
-# process = subprocess.Popen(command, stdout=subprocess.PIPE)
-# output, error = process.communicate()
-# if error:
-#     print(f"Error occurred while adding changes: {error}")
-# else:
-#     print("Changes added successfully.")
+command = ["git", "commit", '-am "address comment"']
+# Execute the command
+process = subprocess.Popen(command, stdout=subprocess.PIPE)
+output, error = process.communicate()
+if error:
+    print(f"Error occurred while commit: {error}")
+else:
+    print("commit applied successfully.")
 
-# command = ["git", "commit", '-am "address comment"']
-# # Execute the command
-# process = subprocess.Popen(command, stdout=subprocess.PIPE)
-# output, error = process.communicate()
-# if error:
-#     print(f"Error occurred while commit: {error}")
-# else:
-#     print("commit applied successfully. output = ", output, " error = ", error)
-
-# BRANCH_NAME = os.getenv('BRANCH_NAME')
-# print(f"branch name {BRANCH_NAME}")
-# command = ["git", "push", f"origin {BRANCH_NAME}"]
-# # Execute the command
-# process = subprocess.Popen(command, stdout=subprocess.PIPE)
-# output, error = process.communicate()
-# if error:
-#     print(f"Error occurred while push: {error}")
-# else:
-#     print("push applied successfully. output = ", output, " error = ", error)
+command = ["git", "push"]
+# Execute the command
+process = subprocess.Popen(command, stdout=subprocess.PIPE)
+output, error = process.communicate()
+if error:
+    print(f"Error occurred while push: {error}")
+else:
+    print("Push applied successfully.")
 
 # apply_file_changes(pr_number, file_path: str, content: str, commit_message: str)
-print(">>>> Success. Helllo")
+print(">>>> Success. Helw")
+exit(0)
