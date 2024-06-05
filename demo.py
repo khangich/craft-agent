@@ -112,5 +112,5 @@ x = chat_results[-1].chat_history[-1]['content']
 print(x)
 with open('file.patch', 'w') as f:
     f.write(x)
-print(">>>> Success. Hellw")
+print(">>>> Success. Helw")
 exit(0)
