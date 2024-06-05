@@ -33,10 +33,9 @@ def _get_diff_content(diff_url):
         return response.text
     else:
         return None
-
-#todo how to pass pr number from workflow?    
+    
 def get_recent_pull_request():
-    return 1
+    return 6
 
 def get_pull_request_comment():
     headers = {
@@ -45,7 +44,6 @@ def get_pull_request_comment():
         "X-GitHub-Api-Version": "2022-11-28"
     }
     url = f"https://api.github.com/repos/{Config().REPO}/pulls/{get_recent_pull_request()}/comments"
-    print(">>> url = ", url)
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         return response.json()
