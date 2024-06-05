@@ -13,6 +13,7 @@ jobs:
 
     env:  # Set environment variables for all steps in this job
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      API_TOKEN: ${{ secrets.API_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
