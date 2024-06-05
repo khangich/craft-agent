@@ -50,6 +50,7 @@ jobs:
         # Run tox using the version of Python in `PATH`
         run: |
           git fetch origin $BRANCH_NAME
+          git checkout origin $BRANCH_NAME
           python demo.py
           git apply file.patch
           git add demo.py
