@@ -65,7 +65,7 @@ def get_filechanges_and_comment() -> str:
             return "TERMINATE"
         print("aomments = ", comments)
         comments = " ".join([c["body"] for c in comments])
-        print(">>> suCes")
+        print(">>> suCees")
         return f"{comments} : {content}"
     # print(">>> pr.comments = ", comments)
     # comments = "do not exit(1), please print success message at the end"
