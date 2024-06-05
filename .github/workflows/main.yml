@@ -27,7 +27,7 @@ jobs:
       - name: Use PR number
         run: echo "PR number is $PR_NUMBER"
         env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event.number }}
       - name: Use secrets
         run: echo "API token is ${{ secrets.API_TOKEN }}"
         env:
@@ -47,3 +47,4 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           REPO: ${{ secrets.REPO }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          PR_NUMBER: ${{ github.event.number }}
