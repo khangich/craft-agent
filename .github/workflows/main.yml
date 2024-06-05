@@ -49,14 +49,15 @@ jobs:
       - name: Run SidekickPro
         # Run tox using the version of Python in `PATH`
         run: |
-          git fetch origin $BRANCH_NAME
-          git checkout origin $BRANCH_NAME
+          echo "BRANCH_NAME is $BRANCH_NAME"
+          git fetch origin kp/test-pragain2
+          git checkout origin kp/test-pragain2
           python demo.py
           git apply file.patch
           git add demo.py
           rm file.patch
           git commit -m "address comments"
-          git push origin $BRANCH_NAME
+          git push origin kp/test-pragain2
         
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
