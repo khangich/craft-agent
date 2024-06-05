@@ -127,6 +127,15 @@ with open('file.patch', 'w') as f:
 #     print("Patch applied successfully. output = ", output, " error = ", error)
 
 
+# # Add the changes
+# command = ["git", "add", "."]
+# process = subprocess.Popen(command, stdout=subprocess.PIPE)
+# output, error = process.communicate()
+# if error:
+#     print(f"Error occurred while adding changes: {error}")
+# else:
+#     print("Changes added successfully.")
+
 # command = ["git", "commit", '-am "address comment"']
 # # Execute the command
 # process = subprocess.Popen(command, stdout=subprocess.PIPE)
@@ -136,7 +145,9 @@ with open('file.patch', 'w') as f:
 # else:
 #     print("commit applied successfully. output = ", output, " error = ", error)
 
-# command = ["git", "push"]
+# BRANCH_NAME = os.getenv('BRANCH_NAME')
+# print(f"branch name {BRANCH_NAME}")
+# command = ["git", "push", f"origin {BRANCH_NAME}"]
 # # Execute the command
 # process = subprocess.Popen(command, stdout=subprocess.PIPE)
 # output, error = process.communicate()
@@ -146,4 +157,4 @@ with open('file.patch', 'w') as f:
 #     print("push applied successfully. output = ", output, " error = ", error)
 
 # apply_file_changes(pr_number, file_path: str, content: str, commit_message: str)
-print(">>>> Success. Helw")
+print(">>>> Success. Hella")
