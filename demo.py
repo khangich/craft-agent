@@ -2,20 +2,20 @@ import autogen
 import os
 from sidekickpro_tools import get_filechanges_and_comment
 
-
-config_list = [{"model": "llama3-70b-8192", "api_key": os.environ["GROQ_API_KEY"], "base_url":"https://api.groq.com/openai/v1"}]
-# config_list = [{"model": "gpt-4", "api_key": os.environ["OPENAI_API_KEY"]}]
+# config_list = [{"model": "llama3-70b-8192", "api_key": os.environ["GROQ_API_KEY"], "base_url": "https://api.groq.com/openai/v1"}]
+config_list = [{"model": "gpt-4", "api_key": os.environ["OPENAI_API_KEY"]}]
 llm_config = {
     "config_list": config_list,
 }
 
+AGENT_ROUTING_PROMPT = """You are managing a group chat with the following agents: {agentlist}.
+Each agent has a specific role:
+- user: Handles human input. When you finish the task, returns to this role.
+- replier_agent: Responds to the user by converting outputs from other agents or functions into friendly, human-readable messages. It may be selected to respond to the output of other agents if the response is not clear.
+- slack_agent: Handles Slack-related questions. For example, to retrieve messages or interact with Slack-specific functions.
+- github_agent: Handles GitHub-related questions. For example, to manage pull requests, issues, and other GitHub interactions.
 
-
-def is_termination_msg(msg):
-    content = msg.get("content", "")
-
-    return content and content.find("TERMINATE") >= 0
-
+Based on the context of the current conversation and the roles of the agents, determine the most appropriate agent to handle the next message. Only return the role of the selected agent."""
 
 GITHUB_AGENT_PROMPT = """
 You are a GitHub agent. Your task is to review the comments and diffs on a specified pull request (PR) and generate a GitHub patch based on the feedback provided. Follow these steps meticulously:
@@ -46,6 +46,19 @@ index 6b0c6cf..b37e70a 100644
 Follow the instructions carefully and ensure the patch file is generated correctly based on the provided guidelines.
 """
 
+
+def is_termination_msg(msg):
+    content = msg.get("content", "")
+
+    return content and content.find("TERMINATE") >= 0
+
+
+replier_agent = autogen.AssistantAgent(
+    name="replier_agent",
+    llm_config=llm_config,
+    is_termination_msg=is_termination_msg,
+    system_message="You are a helpful AI assistant designed to handle outputs from other functions effectively. Your task is to convert the output messages to a friendly human message",
+)
 github_agent = autogen.AssistantAgent(
     name="github_agent",
     system_message=GITHUB_AGENT_PROMPT,
@@ -59,21 +72,34 @@ github_agent.register_for_llm(
     description="Get latest PR changes and comments."
 )(get_filechanges_and_comment)
 
-user = autogen.UserProxyAgent(
+user_proxy = autogen.UserProxyAgent(
     name="user",
     human_input_mode="NEVER",
     code_execution_config=False,
     is_termination_msg=is_termination_msg,
 )
-user.register_for_execution(name="get_filechanges_and_comment")(get_filechanges_and_comment)
+user_proxy.register_for_execution(name="get_filechanges_and_comment")(get_filechanges_and_comment)
+
+group_chat = autogen.GroupChat(
+    agents=[user_proxy, replier_agent, github_agent],
+    messages=[],
+    speaker_selection_method="auto",
+    select_speaker_prompt_template=AGENT_ROUTING_PROMPT,
+)
+manager = autogen.GroupChatManager(
+    name="manager",
+    groupchat=group_chat,
+    llm_config=llm_config,
+    is_termination_msg=is_termination_msg,
+)
 
 print(">>>> Starting demo")
 
-chat_results = user.initiate_chats(
+chat_results = user_proxy.initiate_chats(
     [
         {
-            "recipient": github_agent,
-            "message": "What are the latest comments on my pull request",
+            "recipient": manager,
+            "message": "Get the latest comment in my pull request and apply the feedback based on the comment.",
             "clear_history": True,
             "silent": False,
             "summary_method": "reflection_with_llm",
@@ -81,10 +107,6 @@ chat_results = user.initiate_chats(
     ]
 )
 
-import pprint
-import pdb
-# pdb.set_trace()
-# pprint.pprint(chat_results)
 x = chat_results[-1].chat_history[-1]['content']
 with open('file.patch', 'w') as f:
     f.write(x)
