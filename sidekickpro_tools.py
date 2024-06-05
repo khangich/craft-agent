@@ -36,7 +36,7 @@ def _get_diff_content(diff_url):
 
 def get_recent_pull_request():
     print("pr number = ", os.getenv('PR_NUMBER'))
-    return os.getenv('PR_NUMBER')
+    return int(os.getenv('PR_NUMBER'))
 
 def get_pull_request_comment():
     headers = {
@@ -102,3 +102,5 @@ def apply_file_changes(pr_number: int, file_path: str, content: str, commit_mess
 
     print(f"Commit created and added to PR #{pr_number}")
     return True
+
+get_filechanges_and_comment()
