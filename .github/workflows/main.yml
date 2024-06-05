@@ -1,8 +1,6 @@
 name: Run Python script
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -19,3 +17,4 @@ jobs:
     - name: Run demo.py
       run: |
         docker run --rm -v ${{ github.workspace }}:/app -w /app python:3.8 python demo.py
+
