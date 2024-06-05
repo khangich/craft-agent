@@ -145,7 +145,7 @@ else:
     print("Patch applied successfully.")
 
 
-command = ["git", "commit", '-am "address comment"']
+command = ["git", "commit", '-am " ^_^ ^_^ SidekickPro address comment"']
 # Execute the command
 process = subprocess.Popen(command, stdout=subprocess.PIPE)
 output, error = process.communicate()
