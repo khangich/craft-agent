@@ -3,7 +3,7 @@ import os
 from sidekickpro_tools import get_filechanges_and_comment
 
 # config_list = [{"model": "llama3-70b-8192", "api_key": os.environ["GROQ_API_KEY"], "base_url": "https://api.groq.com/openai/v1"}]
-config_list = [{"model": "gpt-4", "api_key": os.environ["OPENAI_API_KEY"]}]
+config_list = [{"model": "gpt-4", "api_key": os.environ["OPENAI_API_KEY"], "temperature": 0}]
 llm_config = {
     "config_list": config_list,
 }
@@ -112,5 +112,5 @@ x = chat_results[-1].chat_history[-1]['content']
 print(x)
 with open('file.patch', 'w') as f:
     f.write(x)
-print(">>>> Success. Hellw")
+print(">>>> Success. Helw")
 exit(0)
