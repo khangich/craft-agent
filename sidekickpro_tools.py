@@ -59,12 +59,16 @@ def get_filechanges_and_comment() -> str:
     # print("comments = ", pr.comments)
     # print("change files ", pr.changed_files)
     # print("diff_url ", pr.diff_url)
-    content = _get_diff_content(pr.diff_url)
-    comments = get_pull_request_comment()
-    comments = " ".join([c["body"] for c in comments])
+    try:
+        content = _get_diff_content(pr.diff_url)
+        comments = get_pull_request_comment()
+        if not comments or len(comments) < 2:
+            return "TERMINATE"
+        print(">>> comments = ", comments)
+        comments = " ".join([c["body"] for c in comments])
     # print(">>> pr.comments = ", comments)
     # comments = "do not exit(1), please print success message at the end"
-    if  not comments or comments == "" or len(comments) < 2:
+    except:
         return "TERMINATE"
     return f"{comments} : {content}"
 
