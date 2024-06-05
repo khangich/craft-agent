@@ -63,7 +63,7 @@ def get_filechanges_and_comment() -> str:
         comments = get_pull_request_comment()
         if not comments:
             return "TERMINATE"
-        print(">>> comments = ", comments)
+        print("aomments = ", comments)
         comments = " ".join([c["body"] for c in comments])
         return f"{comments} : {content}"
     # print(">>> pr.comments = ", comments)
