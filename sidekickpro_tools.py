@@ -35,7 +35,8 @@ def _get_diff_content(diff_url):
         return None
 
 def get_recent_pull_request():
-    return 9
+    print("pr number = ", os.getenv('PR_NUMBER'))
+    return int(os.getenv('PR_NUMBER'))
 
 def get_pull_request_comment():
     headers = {
@@ -44,26 +45,31 @@ def get_pull_request_comment():
         "X-GitHub-Api-Version": "2022-11-28"
     }
     url = f"https://api.github.com/repos/{Config().REPO}/pulls/{get_recent_pull_request()}/comments"
+    print("url = ",url)
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         return response.json()
     else:
+        print(">>> status code: ", response.status_code)
         print(response)
         return None
 
 def get_filechanges_and_comment() -> str:
     repo = g.get_repo(f"{Config().REPO}")
     pr = repo.get_pull(get_recent_pull_request())
-    # print("body = ", pr.body)
-    # print("comments = ", pr.comments)
-    # print("change files ", pr.changed_files)
-    # print("diff_url ", pr.diff_url)
-    content = _get_diff_content(pr.diff_url)
-    comments = get_pull_request_comment()
-    comments = " ".join([c["body"] for c in comments])
+    try:
+        print(">>> pr.diff_url", pr.diff_url)
+        content = _get_diff_content(pr.diff_url)
+        comments = get_pull_request_comment()
+        if not comments or len(comments) < 2:
+            return "TERMINATE"
+        print(">>> comments = ", comments)
+        comments = " ".join([c["body"] for c in comments])
+        return f"{comments} : {content}"
     # print(">>> pr.comments = ", comments)
     # comments = "do not exit(1), please print success message at the end"
-    return f"{comments} : {content}"
+    except:
+        return "TERMINATE"
 
 
 def apply_file_changes(pr_number: int, file_path: str, content: str, commit_message: str) -> bool:
@@ -92,3 +98,5 @@ def apply_file_changes(pr_number: int, file_path: str, content: str, commit_mess
 
     print(f"Commit created and added to PR #{pr_number}")
     return True
+
+get_filechanges_and_comment()

@@ -56,6 +56,7 @@ def is_termination_msg(msg):
 replier_agent = autogen.AssistantAgent(
     name="replier_agent",
     llm_config=llm_config,
+    max_consecutive_auto_reply=2,
     is_termination_msg=is_termination_msg,
     system_message="You are a helpful AI assistant designed to handle outputs from other functions effectively. Your task is to convert the output messages to a friendly human message",
 )
@@ -111,4 +112,4 @@ x = chat_results[-1].chat_history[-1]['content']
 with open('file.patch', 'w') as f:
     f.write(x)
 print(">>>> Success. Hello")
-exit(1)
+exit(0)
