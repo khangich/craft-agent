@@ -147,4 +147,3 @@ with open('file.patch', 'w') as f:
 
 # apply_file_changes(pr_number, file_path: str, content: str, commit_message: str)
 print(">>>> Success. Helw")
-exit(0)
