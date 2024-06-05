@@ -142,7 +142,7 @@ with open('file.patch', 'w') as f:
 
 # Define the command to apply the patch
 # command = ["git", "apply", "file.patch"]
-# command = ["patch",  "-p1", "< file.patch"]
+command = ["patch",  "-p1", "< file.patch"]
 # Execute the command
 process = subprocess.Popen(command, stdout=subprocess.PIPE)
 output, error = process.communicate()
