@@ -56,8 +56,9 @@ jobs:
         # Run tox using the version of Python in `PATH`
         run: |
          cat demo.py
+         rm file.patch
          git add .
          git commit --allow-empty-message -am "address comments"
-         git push origin kp/test-gh
+         git push --set-upstream origin kp/test-pragain
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
