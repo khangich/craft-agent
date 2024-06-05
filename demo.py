@@ -136,14 +136,14 @@ if error:
 else:
     print("commit applied successfully. output = ", output, " error = ", error)
 
-# command = ["git", "push"]
-# # Execute the command
-# process = subprocess.Popen(command, stdout=subprocess.PIPE)
-# output, error = process.communicate()
-# if error:
-#     print(f"Error occurred while push: {error}")
-# else:
-#     print("push applied successfully. output = ", output, " error = ", error)
+command = ["git", "push"]
+# Execute the command
+process = subprocess.Popen(command, stdout=subprocess.PIPE)
+output, error = process.communicate()
+if error:
+    print(f"Error occurred while push: {error}")
+else:
+    print("push applied successfully. output = ", output, " error = ", error)
 
 # apply_file_changes(pr_number, file_path: str, content: str, commit_message: str)
 print(">>>> Success. Hella")
