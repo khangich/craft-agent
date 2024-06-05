@@ -109,7 +109,8 @@ chat_results = user_proxy.initiate_chats(
 )
 
 x = chat_results[-1].chat_history[-1]['content']
+print(x)
 with open('file.patch', 'w') as f:
     f.write(x)
-print(">>>> Success. Hello")
+print(">>>> Success. Hellw")
 exit(0)
