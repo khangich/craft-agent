@@ -45,10 +45,12 @@ def get_pull_request_comment():
         "X-GitHub-Api-Version": "2022-11-28"
     }
     url = f"https://api.github.com/repos/{Config().REPO}/pulls/{get_recent_pull_request()}/comments"
+    print("url = ",url)
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         return response.json()
     else:
+        print(">>> status code: ", response.status_code)
         print(response)
         return None
 
@@ -60,17 +62,18 @@ def get_filechanges_and_comment() -> str:
     # print("change files ", pr.changed_files)
     # print("diff_url ", pr.diff_url)
     try:
+        print(">>> pr.diff_url", pr.diff_url)
         content = _get_diff_content(pr.diff_url)
         comments = get_pull_request_comment()
         if not comments or len(comments) < 2:
             return "Do not need to do anything."
         print(">>> comments = ", comments)
         comments = " ".join([c["body"] for c in comments])
+        return f"{comments} : {content}"
     # print(">>> pr.comments = ", comments)
     # comments = "do not exit(1), please print success message at the end"
     except:
         return "Do not need to do anything."
-    return f"{comments} : {content}"
 
 
 def apply_file_changes(pr_number: int, file_path: str, content: str, commit_message: str) -> bool:
