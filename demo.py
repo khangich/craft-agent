@@ -2,7 +2,8 @@ import autogen
 from autogen.cache import Cache
 import autogen
 import os
-from githubtools import get_filechanges_and_comment
+# from githubtools import get_filechanges_and_comment
+from sidekickpro_tools import apply_file_changes, get_filechanges_and_comment
 
 llm_config = {
     "config_list": [{"model": "gpt-4", "api_key": os.environ["OPENAI_API_KEY"]}],
@@ -19,17 +20,6 @@ github_agent.register_for_llm(
     description="Get latest PR changes and comments. You are also a code asisstant, you can suggest code changes."
 )(get_filechanges_and_comment)
 
-
-# writer = autogen.AssistantAgent(
-#     name="writer",
-#     llm_config=llm_config,
-#     system_message="""
-#         You are a professional writer, known for
-#         your insightful and engaging articles.
-#         You transform complex concepts into compelling narratives.
-#         Reply "TERMINATE" in the end when everything is done.
-#         """,
-# )
 
 user = autogen.UserProxyAgent(
     name="User",
@@ -49,10 +39,6 @@ chat_results = user.initiate_chats(
             "silent": False,
             "summary_method": "reflection_with_llm",
         },
-        # {
-        #     "recipient": writer,
-        #     "message": "",
-        # },
     ]
 )
 print("success")
