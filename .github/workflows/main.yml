@@ -52,11 +52,11 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           PR_NUMBER: ${{ github.event.number }}
           BRANCH_NAME: ${{ github.head_ref }}
-      # - name: Apply patch
-      #   # Run tox using the version of Python in `PATH`
-      #   run: |
-      #    git apply file.patch
-      #    git commit -am "address comments"
-      #    git push
-      #   env:
-      #     API_TOKEN: ${{ secrets.API_TOKEN }}
+      - name: Apply patch
+        # Run tox using the version of Python in `PATH`
+        run: |
+         git apply file.patch
+         git commit --allow-empty-message -am "address comments"
+         git push origin kp/test-gh
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
