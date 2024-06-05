@@ -28,6 +28,7 @@ Requirements:
 Output Format:
 - Provide the patch in a .patch file format.
 - Only generate the patch file and nothing else. Do not include summaries, explanations, or any additional text.
+- Add TERMINATE string at the end.
 
 Example Patch Format:
 diff –git a/diff_test.txt b/diff_test.txt
@@ -83,4 +84,5 @@ import pdb
 x = chat_results[-1].chat_history[-1]['content']
 with open('file.patch', 'w') as f:
     f.write(x)
-print(">>>> Success")
+print(">>>> Success. Hello")
+exit(1)
