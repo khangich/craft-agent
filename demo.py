@@ -109,10 +109,11 @@ chat_results = user_proxy.initiate_chats(
 )
 
 x = chat_results[-1].chat_history[-1]['content']
+print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 print(x)
 with open('file.patch', 'w') as f:
     f.write(x)
-
+print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 # pr_number = int(os.getenv('PR_NUMBER'))
 # import subprocess
 # # Define the command to apply the patch

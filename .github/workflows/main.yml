@@ -53,7 +53,7 @@ jobs:
           git checkout origin/$BRANCH_NAME
           python demo.py
           git apply file.patch
-          git add demo.py
+          git add *.py
           rm file.patch
           git commit -m "address comments"
           git push origin/$BRANCH_NAME
