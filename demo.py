@@ -117,7 +117,8 @@ with open('file.patch', 'w') as f:
 pr_number = int(os.getenv('PR_NUMBER'))
 import subprocess
 # Define the command to apply the patch
-command = ["git", "apply", "file.patch"]
+# command = ["git", "apply", "file.patch"]
+command = ["patch",  "-p1", "< file.patch"]
 # Execute the command
 process = subprocess.Popen(command, stdout=subprocess.PIPE)
 output, error = process.communicate()
@@ -146,5 +147,5 @@ else:
     print("Push applied successfully.")
 
 # apply_file_changes(pr_number, file_path: str, content: str, commit_message: str)
-print(">>>> Success. Hewlo")
+print(">>>> Success. Helwo")
 exit(0)
