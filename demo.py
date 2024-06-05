@@ -1,8 +1,3 @@
-from typing import Literal
-
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated
-
 import autogen
 from autogen.cache import Cache
 import autogen
@@ -38,10 +33,12 @@ github_agent.register_for_llm(
 
 user = autogen.UserProxyAgent(
     name="User",
-    human_input_mode="ALWAYS",  # ask human for input at each step
+    human_input_mode="NEVER",  # ask human for input at each step
+    code_execution_config=False,
     is_termination_msg=lambda x: x.get("content", "") and x.get("content", "").rstrip().endswith("TERMINATE"),
 )
 user.register_for_execution(name="get_filechanges_and_comment")(get_filechanges_and_comment)
+print(">>>> Starting demo")
 
 chat_results = user.initiate_chats(
     [
