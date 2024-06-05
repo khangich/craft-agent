@@ -55,6 +55,7 @@ jobs:
       - name: Apply patch
         # Run tox using the version of Python in `PATH`
         run: |
+         git checkout -b kp/test-pragain
          cat demo.py
          rm file.patch
          git add .
