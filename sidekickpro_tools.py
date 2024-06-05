@@ -69,9 +69,9 @@ def get_filechanges_and_comment() -> str:
         comments = get_pull_request_comment()
         if not comments:
             return "TERMINATE"
-        print("comments = ", comments)
         comments = " ".join([c["body"] for c in comments])
-        print("suc3s")
+        print("comments = ", comments)
+        print("suces")
         print("Fixed type message")
         return \
             f"""Agent to handle:

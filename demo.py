@@ -136,7 +136,7 @@ with open('file.patch', 'w') as f:
 
 # Define the command to apply the patch
 # command = ["git", "apply", "file.patch"]
-command = "patch -p1 < file.patch"
+command = "patch --verbose -p1 < file.patch"
 process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 output, error = process.communicate()
 if error:
