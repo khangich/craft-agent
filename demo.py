@@ -4,8 +4,8 @@ import re
 
 from sidekickpro_tools import apply_file_changes, get_filechanges_and_comment
 
-config_list = [{"model": "llama3-70b-8192", "api_key": os.environ["GROQ_API_KEY"], "base_url": "https://api.groq.com/openai/v1"}]
-# config_list = [{"model": "gpt-4", "api_key": os.environ["OPENAI_API_KEY"], "temperature": 0}]
+# config_list = [{"model": "llama3-70b-8192", "api_key": os.environ["GROQ_API_KEY"], "base_url": "https://api.groq.com/openai/v1"}]
+config_list = [{"model": "gpt-4", "api_key": os.environ["OPENAI_API_KEY"]}]
 llm_config = {
     "config_list": config_list,
 }
@@ -102,15 +102,41 @@ chat_results = user_proxy.initiate_chats(
 last_message = chat_results[-1].chat_history[-1]['content']
 last_message = re.sub(r'TERMINATE\n?$', '', last_message)
 
+pr_number = int(os.getenv('PR_NUMBER'))
+
+BRANCH_NAME = os.getenv('BRANCH_NAME')
+import subprocess
+
+
+
+# Pull the latest changes from the remote repository
+# command = ["git", "pull", "origin", BRANCH_NAME]
+# process = subprocess.Popen(command, stdout=subprocess.PIPE)
+# output, error = process.communicate()
+# if error:
+#     print(f"Error occurred while pulling: {error}")
+# else:
+#     print("Pull successful.")
+# command = ["git", "checkout", f"origin/{BRANCH_NAME}"]
+# process = subprocess.Popen(command, stdout=subprocess.PIPE)
+# output, error = process.communicate()
+# if error:
+#     print(f"Error occurred while pulling: {error}")
+# else:
+#     print("Checkout branch successful.")
+
+
+x = last_message
+print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+print(x)
 with open('file.patch', 'w') as f:
     f.write(last_message)
 
-pr_number = int(os.getenv('PR_NUMBER'))
-import subprocess
+
+
 # Define the command to apply the patch
 # command = ["git", "apply", "file.patch"]
 command = ["patch",  "-p1", "< file.patch"]
-# Execute the command
 process = subprocess.Popen(command, stdout=subprocess.PIPE)
 output, error = process.communicate()
 if error:
@@ -128,7 +154,9 @@ if error:
 else:
     print("commit applied successfully.")
 
-command = ["git", "push"]
+
+
+command = ["git", "push", "origin", f"{BRANCH_NAME}"]
 # Execute the command
 process = subprocess.Popen(command, stdout=subprocess.PIPE)
 output, error = process.communicate()
@@ -138,5 +166,5 @@ else:
     print("Push applied successfully.")
 
 # apply_file_changes(pr_number, file_path: str, content: str, commit_message: str)
-print(">>>> Success. Helwo")
+print(">>>> Success. hel0o")
 exit(0)

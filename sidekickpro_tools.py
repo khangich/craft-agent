@@ -73,36 +73,36 @@ def get_filechanges_and_comment() -> str:
         comments = " ".join([c["body"] for c in comments])
         return \
             f"""Agent to handle:
-- github_agent
-            
-Requirements:
-- Review and update the following diff based on the code comments from the pull request.
-- Ensure the patch follows the repository's coding standards.
-- Address all issues mentioned in the feedback comments.
-- Follow the instructions carefully and ensure the patch file is generated correctly based on the provided guidelines.
+              - github_agent
 
-Output Format:
-- Provide the patch in a .patch file format.
-- Only generate the patch file and nothing else. Do not include summaries, explanations, or any additional text.
-- Add a TERMINATE string at the end.
+              Requirements:
+              - Review and update the following diff based on the code comments from the pull request.
+              - Ensure the patch follows the repository's coding standards.
+              - Address all issues mentioned in the feedback comments.
+              - Follow the instructions carefully and ensure the patch file is generated correctly based on the provided guidelines.
 
-Example Patch Format:
-diff –git a/diff_test.txt b/diff_test.txt
-index 6b0c6cf..b37e70a 100644
-— a/diff_test.txt
-+++ b/diff_test.txt
-@@ -1 +1 @@
--this is a git diff test example
-+this is a diff example
+              Output Format:
+              - Provide the patch in a .patch file format.
+              - Only generate the patch file and nothing else. Do not include summaries, explanations, or any additional text.
+              - Add a TERMINATE string at the end.
 
-Diff:
+              Example Patch Format:
+              diff –git a/diff_test.txt b/diff_test.txt
+              index 6b0c6cf..b37e70a 100644
+              — a/diff_test.txt
+              +++ b/diff_test.txt
+              @@ -1 +1 @@
+              -this is a git diff test example
+              +this is a diff example
 
-{content}
+              Diff:
 
-Code comments:
+              {content}
 
-{comments}
-"""
+              Code comments:
+
+              {comments}
+              """
     # print(">>> pr.comments = ", comments)
     # comments = "do not exit(1), please print success message at the end"
     except:

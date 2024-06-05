@@ -1,6 +1,6 @@
 import autogen
 import os
-from githubtools import get_filechanges_and_comment
+from sidekickpro_tools import get_filechanges_and_comment
 
 llm_config = {
     "config_list": [{"model": "gpt-3.5-turbo", "api_key": os.environ["OPENAI_API_KEY"]}],
