@@ -1,6 +1,6 @@
 import autogen
 import os
-from sidekickpro_tools import get_filechanges_and_comment
+from sidekickpro_tools import apply_file_changes, get_filechanges_and_comment
 
 # config_list = [{"model": "llama3-70b-8192", "api_key": os.environ["GROQ_API_KEY"], "base_url": "https://api.groq.com/openai/v1"}]
 config_list = [{"model": "gpt-4", "api_key": os.environ["OPENAI_API_KEY"], "temperature": 0}]
@@ -112,5 +112,38 @@ x = chat_results[-1].chat_history[-1]['content']
 print(x)
 with open('file.patch', 'w') as f:
     f.write(x)
+
+pr_number = int(os.getenv('PR_NUMBER'))
+import subprocess
+# Define the command to apply the patch
+command = ["git", "apply", "file.patch"]
+# Execute the command
+process = subprocess.Popen(command, stdout=subprocess.PIPE)
+output, error = process.communicate()
+if error:
+    print(f"Error occurred while applying patch: {error}")
+else:
+    print("Patch applied successfully.")
+
+
+command = ["git", "commit", '-am "address comment"']
+# Execute the command
+process = subprocess.Popen(command, stdout=subprocess.PIPE)
+output, error = process.communicate()
+if error:
+    print(f"Error occurred while commit: {error}")
+else:
+    print("commit applied successfully.")
+
+command = ["git", "push"]
+# Execute the command
+process = subprocess.Popen(command, stdout=subprocess.PIPE)
+output, error = process.communicate()
+if error:
+    print(f"Error occurred while push: {error}")
+else:
+    print("Push applied successfully.")
+
+# apply_file_changes(pr_number, file_path: str, content: str, commit_message: str)
 print(">>>> Success. Helw")
 exit(0)
