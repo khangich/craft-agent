@@ -23,21 +23,6 @@ human_proxy = autogen.ConversableAgent(
     human_input_mode="ALWAYS",  # Never ask for human input.
 )
 
-# The user proxy agent is used for interacting with the assistant agent
-# and executes tool calls.
-user_proxy = autogen.ConversableAgent(
-    name="User",
-    is_termination_msg=lambda msg: msg.get("content") and "TERMINATE" in msg["content"],
-    human_input_mode="NEVER",
-)
-
-github_agent = autogen.ConversableAgent(
-    "github_agent",
-    system_message="You are the expert in github cli. When client asks about github cli, gives them useful information on how to use it?",
-    llm_config=llm_config,
-    is_termination_msg=is_termination_msg,
-    human_input_mode="TERMINATE"
-)
 
 def get_unread_messages() -> list[str]:
     print('Executing get_unread_messages')
@@ -96,11 +81,12 @@ global_last_messsage = """
 
 async def execute_github_pr_agent(comment: str) -> str:
     # print(github_agent.last_message)
-    return await human_proxy.send(
-        message=f"""You're a Code generation assistant, you have this review comment: '{human_proxy.chat_messages}' for your PR changes. 
-       """,
-       recipient=pr_update_github_agent,
+    human_proxy.initiate_chat(
+        pr_update_github_agent,
+        message=f"""You're a Code generation assistant, you have this review comment: '{github_agent.chat_messages[-1]}' for your PR changes. 
+       """
     )
+    return human_proxy.last_message()["content"]
 
 
 github_agent.register_for_llm(
@@ -111,12 +97,9 @@ github_agent.register_for_llm(
 
 
 human_proxy.register_for_execution(name="get_filechanges_and_comment")(get_filechanges_and_comment)
-
-
-human_proxy.register_for_execution(name="execute_github_pr_agent")(execute_github_pr_agent)
+# human_proxy.register_for_execution(name="execute_github_pr_agent")(execute_github_pr_agent)
 
 human_proxy.initiate_chat(
     github_agent,
     message="What is new with my PR changes?"
 )
-
