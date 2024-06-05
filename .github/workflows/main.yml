@@ -20,6 +20,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -47,13 +49,12 @@ jobs:
       - name: Run SidekickPro
         # Run tox using the version of Python in `PATH`
         run: |
-         git fetch origin kp/test-pragain2
-         git checkout origin/kp/test-pragain2
-         echo 'print("a")' >> demo.py
-         cat demo.py
-         git add demo.py
-         git commit --allow-empty-message -am "address comments"
-         git push --set-upstream origin kp/test-pragain2
+          git fetch origin kp/test-pragain2
+          git checkout kp/test-pragain2
+          echo 'print("a")' >> demo.py
+          git add demo.py
+          git commit -m "address comments"
+          git push origin kp/test-pragain2
         
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
