@@ -57,6 +57,7 @@ jobs:
         run: |
          cat file.patch
          git apply file.patch
+         git add .
          git commit --allow-empty-message -am "address comments"
          git push origin kp/test-gh
         env:
