@@ -49,9 +49,8 @@ jobs:
       - name: Run SidekickPro
         # Run tox using the version of Python in `PATH`
         run: |
-          echo "BRANCH_NAME is $BRANCH_NAME"
           git fetch origin kp/test-pragain2
-          git checkout origin kp/test-pragain2
+          git checkout origin/kp/test-pragain2
           python demo.py
           git apply file.patch
           git add demo.py
