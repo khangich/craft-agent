@@ -8,14 +8,12 @@ llm_config = {
 
 AGENT_ROUTING_PROMPT = """You are managing a group chat with the following agents: {agentlist}.
 Each agent has a specific role:
-- user: Handles human input.
-- replier_agent: Responds to the user by converting outputs from other agents or functions into friendly, human-readable messages. This agent ensures that the user receives clear and helpful information. It can be selected to response to output of other agents like executor, slack_agent, github_agent, or user_proxy.
-- executor: Only use to executes tool on behalf of other agents. This must only be selected if there is tool or function to execute.
-- slack_agent: Handles Slack-related questions. For example, to retrieve messages or interacting with Slack-specific functions.
-- github_agent: Handles GitHub-related question. For example, to manage pull requests, issues, and other GitHub interactions.
+- user: Handles human input. When you finish the task, returns to this role.
+- replier_agent: Responds to the user by converting outputs from other agents or functions into friendly, human-readable messages. It may be selected to respond to the output of other agents if the response is not clear.
+- slack_agent: Handles Slack-related questions. For example, to retrieve messages or interact with Slack-specific functions.
+- github_agent: Handles GitHub-related questions. For example, to manage pull requests, issues, and other GitHub interactions.
 
-Based on the context of the current conversation and the roles of the agents, determine the most appropriate agent to handle the next message. Only return the role of the selected agent.
-"""
+Based on the context of the current conversation and the roles of the agents, determine the most appropriate agent to handle the next message. Only return the role of the selected agent."""
 
 
 def is_termination_msg(msg):
@@ -37,7 +35,7 @@ def get_unread_messages() -> list[str]:
         "Lunch is on me today! Any suggestions for where we should order from?",
         "The new feature deployment is scheduled for tomorrow. Please test your modules.",
         "Can we reschedule our 1:1 meeting? Something urgent came up.",
-        "Congratulations to [Name] on their promotion to Senior Developer! 🎉",
+        "Congratulations to Tim on their promotion to Senior Developer! 🎉",
         "Please review the updated project timeline and provide your feedback by EOD.",
         "We need volunteers for the upcoming hackathon. Who's interested?",
         "I'm looking for recommendations for a good book on project management. Any suggestions?",
@@ -54,14 +52,6 @@ user_proxy = autogen.UserProxyAgent(
     is_termination_msg=is_termination_msg,
     code_execution_config=False,
 )
-executor = autogen.UserProxyAgent(
-    name="executor",
-    human_input_mode="NEVER",
-    code_execution_config={
-        "use_docker": False,
-    },
-    is_termination_msg=is_termination_msg,
-)
 replier_agent = autogen.AssistantAgent(
     name="replier_agent",
     llm_config=llm_config,
@@ -72,11 +62,14 @@ slack_agent = autogen.AssistantAgent(
     "slack_agent",
     system_message="You are helpful slack assistant that helps user select the right tools to solve their problems",
     llm_config=llm_config,
+    code_execution_config={
+        "use_docker": False,
+    },
 )
 autogen.agentchat.register_function(
     get_unread_messages,
     caller=slack_agent,
-    executor=executor,
+    executor=slack_agent,
     name="get_unread_messages",
     description="Get unread messages from slack from the current registered user"
 )
@@ -86,10 +79,10 @@ github_agent = autogen.AssistantAgent(
     llm_config=llm_config,
 )
 group_chat = autogen.GroupChat(
-    agents=[user_proxy, replier_agent, github_agent, slack_agent, executor],
+    agents=[user_proxy, replier_agent, github_agent, slack_agent],
     messages=[],
     speaker_selection_method="auto",
-    select_speaker_prompt_template=AGENT_ROUTING_PROMPT
+    select_speaker_prompt_template=AGENT_ROUTING_PROMPT,
 )
 manager = autogen.GroupChatManager(
     name="manager",
