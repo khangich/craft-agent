@@ -163,7 +163,7 @@ else:
 
 
 
-command = ["git", "push", f"origin/{BRANCH_NAME}"]
+command = ["git", "push", "origin", f"{BRANCH_NAME}"]
 # Execute the command
 process = subprocess.Popen(command, stdout=subprocess.PIPE)
 output, error = process.communicate()
