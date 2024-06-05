@@ -113,18 +113,18 @@ print(x)
 with open('file.patch', 'w') as f:
     f.write(x)
 
-# pr_number = int(os.getenv('PR_NUMBER'))
-# import subprocess
-# # Define the command to apply the patch
-# command = ["git", "apply", "file.patch"]
-# # Execute the command
-# process = subprocess.Popen(command, stdout=subprocess.PIPE)
-# output, error = process.communicate()
-# if error:
-#     print(f"Error occurred while applying patch: {error}")
-# else:
-#     print("Patch applied successfully.")
-#     print("Patch applied successfully. output = ", output, " error = ", error)
+pr_number = int(os.getenv('PR_NUMBER'))
+import subprocess
+# Define the command to apply the patch
+command = ["git", "apply", "file.patch"]
+# Execute the command
+process = subprocess.Popen(command, stdout=subprocess.PIPE)
+output, error = process.communicate()
+if error:
+    print(f"Error occurred while applying patch: {error}")
+else:
+    print("Patch applied successfully.")
+    print("Patch applied successfully. output = ", output, " error = ", error)
 
 
 # command = ["git", "commit", '-am "address comment"']
