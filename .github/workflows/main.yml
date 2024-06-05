@@ -56,6 +56,7 @@ jobs:
         # Run tox using the version of Python in `PATH`
         run: |
          git checkout -b kp/test-pragain
+         git apply file.patch
          cat demo.py
          rm file.patch
          git commit --allow-empty-message -am "address comments"
