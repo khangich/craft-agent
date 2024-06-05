@@ -108,14 +108,38 @@ chat_results = user_proxy.initiate_chats(
     ]
 )
 
+pr_number = int(os.getenv('PR_NUMBER'))
+
+BRANCH_NAME = os.getenv('BRANCH_NAME')
+import subprocess
+
+
+
+# Pull the latest changes from the remote repository
+# command = ["git", "pull", "origin", BRANCH_NAME]
+# process = subprocess.Popen(command, stdout=subprocess.PIPE)
+# output, error = process.communicate()
+# if error:
+#     print(f"Error occurred while pulling: {error}")
+# else:
+#     print("Pull successful.")
+# command = ["git", "checkout", f"origin/{BRANCH_NAME}"]
+# process = subprocess.Popen(command, stdout=subprocess.PIPE)
+# output, error = process.communicate()
+# if error:
+#     print(f"Error occurred while pulling: {error}")
+# else:
+#     print("Checkout branch successful.")
+
+
 x = chat_results[-1].chat_history[-1]['content']
 print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 print(x)
 with open('file.patch', 'w') as f:
     f.write(x)
 
-pr_number = int(os.getenv('PR_NUMBER'))
-import subprocess
+
+
 # Define the command to apply the patch
 # command = ["git", "apply", "file.patch"]
 command = ["patch",  "-p1", "< file.patch"]
@@ -137,9 +161,9 @@ if error:
 else:
     print("commit applied successfully.")
 
-BRANCH_NAME = os.getenv('BRANCH_NAME')
 
-command = ["git", "push", "origin", f"HEAD:origin/{BRANCH_NAME}"]
+
+command = ["git", "push", f"origin/{BRANCH_NAME}"]
 # Execute the command
 process = subprocess.Popen(command, stdout=subprocess.PIPE)
 output, error = process.communicate()
