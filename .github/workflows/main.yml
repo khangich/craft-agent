@@ -42,6 +42,7 @@ jobs:
           pip install -r requirements.txt
           git config --global user.email "SidekickPro@ai"
           git config --global user.name "SidekickPro"
+          git config --global core.whitespace false
       - name: Run SidekickPro
         # Run tox using the version of Python in `PATH`
         run: |
