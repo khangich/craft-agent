@@ -61,14 +61,14 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           PR_NUMBER: ${{ github.event.number }}
           BRANCH_NAME: ${{ github.head_ref }}
-      - name: Apply patch
-        # Run tox using the version of Python in `PATH`
-        run: |
-         git checkout -b kp/test-pragain
-         git apply file.patch
-         cat demo.py
-         rm file.patch
-         git commit --allow-empty-message -am "address comments"
-         git push --set-upstream origin kp/test-pragain
-        env:
-          API_TOKEN: ${{ secrets.API_TOKEN }}
+      # - name: Apply patch
+      #   # Run tox using the version of Python in `PATH`
+      #   run: |
+      #    git checkout -b kp/test-pragain
+      #    git apply file.patch
+      #    cat demo.py
+      #    rm file.patch
+      #    git commit --allow-empty-message -am "address comments"
+      #    git push --set-upstream origin kp/test-pragain
+      #   env:
+      #     API_TOKEN: ${{ secrets.API_TOKEN }}
